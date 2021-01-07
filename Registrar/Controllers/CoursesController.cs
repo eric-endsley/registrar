@@ -56,9 +56,13 @@ namespace Registrar.Controllers
         {
             if (StudentId != 0)
             {
-                _db.StudentCourse.Add(new StudentCourse() { StudentId = StudentId, CourseId = course.CourseId });
+                var returnedJoin = _db.StudentCourse
+                    .Any(join => join.StudentId == StudentId && join.CourseId == course.CourseId);
+                if (!returnedJoin)
+                {
+                    _db.StudentCourse.Add(new StudentCourse() { StudentId = StudentId, CourseId = course.CourseId });
+                }
             }
-
             _db.SaveChanges();
             return RedirectToAction("Details", new { id = course.CourseId });
         }

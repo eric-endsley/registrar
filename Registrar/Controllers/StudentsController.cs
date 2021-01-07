@@ -57,11 +57,44 @@ namespace Registrar.Controllers
         public ActionResult AddCourse(Student student, int CourseId)
         {
             if (CourseId != 0)
-            {
-              _db.StudentCourse.Add(new StudentCourse() { CourseId = CourseId, StudentId = student.StudentId });
+            { 
+              var returnedJoin = _db.StudentCourse
+                .Any(join => join.CourseId == CourseId && join.StudentId == student.StudentId);
+              if (!returnedJoin) 
+              {
+                _db.StudentCourse.Add(new StudentCourse() { CourseId = CourseId, StudentId = student.StudentId });
+              }
             }
             _db.SaveChanges();
             return RedirectToAction("Details", new { id = student.StudentId });
         }
+
+        [HttpPost]
+        public ActionResult DeleteJoin(int studentId, int studentCourseId) // Line 46 in StudentsController.cs is `Student student`
+        {
+          var joinEntry = _db.StudentCourse.FirstOrDefault(entry => entry.StudentCourseId == studentCourseId);
+          _db.StudentCourse.Remove(joinEntry);
+          _db.SaveChanges();
+          return RedirectToAction("Details", new { id = studentId });
+        }
+
+//will check if a relationship exists already and prevent duplicates
+//      [HttpPost]
+//      public ActionResult AddCategory(Item item, int CategoryId)
+//      {
+//      if (CategoryId != 0)
+//   // Check if CategoryId is valid
+//      {
+//     var returnedJoin = _db.CategoryItem
+//       .Any(join => join.ItemId == item.ItemId && join.CategoryId == CategoryId);
+//     // Check if "Any" of this relationship exists, returns a bool
+//     if (!returnedJoin) {
+//     // if the returnedJoin for that relationship if false, then add the relationship
+//       _db.CategoryItem.Add(new CategoryItem() { CategoryId = CategoryId, ItemId = item.ItemId });
+//     }
+//   }
+//   _db.SaveChanges();
+//   return RedirectToAction("Index");
+// }
     }
 }
