@@ -16,7 +16,11 @@
 @foreach (Course course in Model)
 {
     <ul>
-        <li>@Html.ActionLink($"{course.CourseNumber} | {course.CourseName}", "Details", new { id = course.CourseId }) </li>
+        <li>@Html.ActionLink($"{course.CourseNumber} | {course.CourseName}", "Details", new { id = course.CourseId }) | </li>
+        @using (Html.BeginForm())
+        {
+        <input type="submit" value="Delete" />
+        }
     </ul>
 }
 

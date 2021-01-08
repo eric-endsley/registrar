@@ -57,10 +57,10 @@ namespace Registrar.Controllers
         public ActionResult AddCourse(Student student, int CourseId)
         {
             if (CourseId != 0)
-            { 
+            {
               var returnedJoin = _db.StudentCourse
                 .Any(join => join.CourseId == CourseId && join.StudentId == student.StudentId);
-              if (!returnedJoin) 
+              if (!returnedJoin)
               {
                 _db.StudentCourse.Add(new StudentCourse() { CourseId = CourseId, StudentId = student.StudentId });
               }
@@ -76,6 +76,12 @@ namespace Registrar.Controllers
           _db.StudentCourse.Remove(joinEntry);
           _db.SaveChanges();
           return RedirectToAction("Details", new { id = studentId });
+        }
+
+        public ActionResult Delete(int studentId)
+        {
+          var thisStudent = _db.Students.FirstOrDefault(student => student.StudentId == studentId);
+          return View(thisStudent);
         }
 
 //will check if a relationship exists already and prevent duplicates
